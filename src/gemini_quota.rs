@@ -18,7 +18,7 @@ pub fn parse(value:&Value)->Result<Snapshot,String>{
     let windows=[("GXU_FIVE_HOURLY",18000,"5 小时"),("GXU_WEEKLY",604800,"本周")].into_iter().filter_map(|(kind,seconds,label)|{
         let pool=pools.iter().find(|p|p["poolType"]==kind)?;
         let used=pool["percentageUsed"].as_f64().filter(|n|n.is_finite() && *n>=0.0)?;
-        Some(Window{label:label.into(),seconds:Some(seconds),remaining:(100.0-used*100.0).clamp(0.0,100.0) as f32,reset:super::reset(&pool["gxu"]["windowRefreshesAt"])})
+        Some(Window{label:label.into(),seconds:Some(seconds),remaining:(100.0-used*100.0).clamp(0.0,100.0) as f32,reset:super::reset(&pool["gxu"]["windowRefreshesAt"]),text:None})
     }).collect::<Vec<_>>();
     if windows.is_empty(){return Err("此 Google 账号暂未提供 Gemini 订阅额度".into());}
     Ok(Snapshot{plan:if usage["subscriptionTier"]=="TIER1"{"AI Pro"}else{""}.into(),windows,extra:vec![],at:chrono::Utc::now().timestamp()})
