@@ -1,4 +1,4 @@
-﻿//! 设置、通知队列与岛仔表情。
+//! 设置、通知队列与岛仔表情。
 use crate::app::{App, Cmd, Phase, HUD_TRACK_W, HUD_TRACK_X, HUD_W, PAGE_NAMES};
 use crate::paint::{Card, H};
 use crate::theme::{self, size, W};
@@ -228,6 +228,7 @@ impl App {
         if !self.notification_apps.observe(&id,&app) || !self.settings.notifications {return;}
         self.notification_bell_at=self.t;
         self.notification_bell_until=self.t+4.5;
+        self.enqueue_alert(Alert{title:app,body,page:0,at:self.t,duration:5.0,bluetooth:None,meeting:None}, false);
     }
     pub(crate) fn tick_alerts(&mut self) {
         if self
